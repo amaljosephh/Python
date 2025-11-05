@@ -1,975 +1,131 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authenticate Your Account</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+{% extends "base.html" %}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: white;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+{% block content %}
+<section id="hero">
+    <h4>Trade-in-offer</h4>
+    <h2>All products</h2>
+    <h1>Super value</h1>
+    <p>Save more with 70% offers!</p>
+    <button>Shop Now</button>
+</section>
 
-        .container {
-            background: white;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            padding: 40px 30px;
-        }
-
-        /* Back Button */
-        .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #333;
-            padding: 10px;
-            border-radius: 50%;
-            transition: background 0.3s ease;
-        }
-
-        .back-button:hover {
-            background: #f5f5f5;
-        }
-
-        /* Setup Screen */
-        .setup-screen {
-            display: block;
-        }
-
-        .setup-screen.hidden {
-            display: none;
-        }
-
-        .title {
-            font-size: 28px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 10px;
-            line-height: 1.2;
-        }
-
-        .subtitle {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 40px;
-            line-height: 1.4;
-        }
-
-        .face-graphic {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 40px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .face-wireframe {
-            width: 120px;
-            height: 150px;
-            border: 3px solid #333;
-            border-radius: 50px;
-            position: relative;
-        }
-
-        .face-wireframe::before {
-            content: '';
-            position: absolute;
-            top: 30px;
-            left: 25px;
-            width: 8px;
-            height: 8px;
-            background: #333;
-            border-radius: 50%;
-        }
-
-        .face-wireframe::after {
-            content: '';
-            position: absolute;
-            top: 30px;
-            right: 25px;
-            width: 8px;
-            height: 8px;
-            background: #333;
-            border-radius: 50%;
-        }
-
-        .face-brackets {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-
-        .bracket {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #333;
-        }
-
-        .bracket.top-left {
-            top: 0;
-            left: 0;
-            border-right: none;
-            border-bottom: none;
-        }
-
-        .bracket.top-right {
-            top: 0;
-            right: 0;
-            border-left: none;
-            border-bottom: none;
-        }
-
-        .bracket.bottom-left {
-            bottom: 0;
-            left: 0;
-            border-right: none;
-            border-top: none;
-        }
-
-        .bracket.bottom-right {
-            bottom: 0;
-            right: 0;
-            border-left: none;
-            border-top: none;
-        }
-
-        .instructions {
-            text-align: left;
-            margin-bottom: 40px;
-            padding: 0 20px;
-        }
-
-        .instruction-item {
-            font-size: 16px;
-            color: #333;
-            margin-bottom: 15px;
-            line-height: 1.4;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .instruction-item::before {
-            content: '•';
-            color: #333;
-            font-weight: bold;
-            font-size: 18px;
-            line-height: 1;
-            margin-top: 2px;
-        }
-
-        .start-button {
-            background: #333;
-            color: white;
-            border: none;
-            padding: 16px 40px;
-            font-size: 18px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            max-width: 280px;
-            transition: all 0.3s ease;
-        }
-
-        .start-button:hover {
-            background: #555;
-            transform: translateY(-2px);
-        }
-
-        .start-button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Verification Screen */
-        .verification-screen {
-            display: none;
-        }
-
-        .verification-screen.active {
-            display: block;
-        }
-
-        .camera-container {
-            position: relative;
-            width: 280px;
-            height: 280px;
-            margin: 0 auto 30px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 8px solid #333;
-            background: #333;
-        }
-
-        .camera-feed {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: none;
-        }
-
-        .camera-placeholder {
-            width: 100%;
-            height: 100%;
-            background: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 16px;
-        }
-
-        .camera-feed.active {
-            display: block;
-        }
-
-        .camera-placeholder.hidden {
-            display: none;
-        }
-
-        /* Progress Indicator */
-        .progress-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .progress-step {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 16px;
-            border: 3px solid #ddd;
-            background: white;
-            color: #999;
-        }
-
-        .progress-step.completed {
-            background: #333;
-            border-color: #333;
-            color: white;
-        }
-
-        .progress-step.active {
-            border-color: #333;
-            color: #333;
-            background: white;
-        }
-
-        .progress-step.completed::after {
-            content: '✓';
-            font-size: 18px;
-        }
-
-        /* Instructions */
-        .instruction-text {
-            font-size: 18px;
-            color: #333;
-            margin-bottom: 30px;
-            min-height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* 3D Depth Indicator */
-        .depth-indicator {
-            background: #f8f9fa;
-            border: 2px solid #333;
-            border-radius: 12px;
-            padding: 15px;
-            margin: 20px 0;
-            font-size: 14px;
-            display: none;
-        }
-
-        .depth-indicator.active {
-            display: block;
-        }
-
-        .depth-indicator h4 {
-            margin: 0 0 10px 0;
-            color: #333;
-            font-size: 16px;
-        }
-
-        .depth-values {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .depth-value {
-            background: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            font-family: monospace;
-            font-size: 12px;
-        }
-
-        /* Captured Photo */
-        .captured-photo {
-            display: none;
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .captured-photo.active {
-            display: block;
-        }
-
-        .captured-photo img {
-            max-width: 250px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-            border: 4px solid #333;
-        }
-
-        .success-message {
-            background: #f0f9ff;
-            color: #1e40af;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border: 2px solid #3b82f6;
-        }
-
-        .download-button {
-            background: #333;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .download-button:hover {
-            background: #555;
-            transform: translateY(-2px);
-        }
-
-        /* Connection Status */
-        .connection-status {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #f44336;
-        }
-
-        .status-dot.connected {
-            background: #4caf50;
-        }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-            .container {
-                padding: 30px 20px;
-            }
-            
-            .title {
-                font-size: 24px;
-            }
-            
-            .camera-container {
-                width: 240px;
-                height: 240px;
-            }
-            
-            .instructions {
-                padding: 0 10px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Connection Status -->
-    <div class="connection-status">
-        <div class="status-dot disconnected" id="connectionDot"></div>
-        <span id="connectionStatus">Connecting...</span>
+<section id="feature" class="section-p1">
+    <div class="fe-box">
+        <img src="{{ url_for('static', filename='img/f2.png') }}" alt=""> 
+        <h6>Shipping</h6>
     </div>
+    <div class="fe-box">
+        <img src="{{ url_for('static', filename='img/f3.png') }}" alt=""> 
+        <h6>Online Order</h6>
+    </div>
+    <div class="fe-box">
+        <img src="{{ url_for('static', filename='img/f4.png') }}" alt=""> 
+        <h6>Shipping</h6>
+    </div>
+    <div class="fe-box">
+        <img src="{{ url_for('static', filename='img/f1.png') }}" alt=""> 
+        <h6>Shipping</h6>
+    </div>
+    <div class="fe-box">
+        <img src="{{ url_for('static', filename='img/f5.png') }}" alt=""> 
+        <h6>Shipping</h6>
+    </div>
+    <div class="fe-box">
+        <img src="{{ url_for('static', filename='img/f6.png') }}" alt=""> 
+        <h6>Shipping</h6>
+    </div>
+</section>
 
-    <div class="container">
-        <!-- Setup Screen (Phase 1) -->
-        <div class="setup-screen" id="setupScreen">
-            <button class="back-button" id="backButton">←</button>
-            
-            <h1 class="title">Authenticate your account</h1>
-            <p class="subtitle">Let us ensure that you are a real person</p>
-            
-            <div class="face-graphic">
-                <div class="face-wireframe"></div>
-                <div class="face-brackets">
-                    <div class="bracket top-left"></div>
-                    <div class="bracket top-right"></div>
-                    <div class="bracket bottom-left"></div>
-                    <div class="bracket bottom-right"></div>
+<section id="product1" class="section-p1">
+    <h2>Features Products</h2>
+    <p>Summer New Modern Designs</p>
+    <div class="pro-container">
+        <div class="pro">
+            <img src="{{ url_for('static', filename='img/f1.jpg') }}" alt="">
+            <div class="des">
+                <span>adidas</span>
+                <h5>Cartoon Astronaut</h5>
+                <div class="star">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
                 </div>
+                <h4>Rs. 1450</h4>
             </div>
-            
-            <div class="instructions">
-                <div class="instruction-item">
-                    Ensure your face is at the same level as your phone and look directly at the camera.
-                </div>
-                <div class="instruction-item">
-                    Ensure your face is within the circle and your ears are exposed.
-                </div>
-            </div>
-            
-            <button class="start-button" id="startButton">Start</button>
+            <a href="#"><i class="fal fa-shopping-cart"></i></a>
         </div>
-
-        <!-- Verification Screen (Phase 2) -->
-        <div class="verification-screen" id="verificationScreen">
-            <button class="back-button" id="backToSetup" style="display: none;">←</button>
-            
-            <!-- Camera Feed -->
-            <div class="camera-container">
-                <video id="cameraFeed" class="camera-feed" autoplay muted playsinline></video>
-                <div class="camera-placeholder" id="cameraPlaceholder">
-                    Starting camera...
+        
+        <div class="pro">
+            <img src="{{ url_for('static', filename='img/f2.jpg') }}" alt="">
+            <div class="des">
+                <span>adidas</span>
+                <h5>Cartoon Astronaut</h5>
+                <div class="star">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
                 </div>
+                <h4>Rs. 1450</h4>
             </div>
-            
-            <!-- Progress Indicator -->
-            <div class="progress-container">
-                <div class="progress-step" id="step1">1</div>
-                <div class="progress-step" id="step2">2</div>
-                <div class="progress-step" id="step3">3</div>
-            </div>
-            
-            <!-- Current Instruction -->
-            <div class="instruction-text" id="instructionText">
-                Preparing verification...
-            </div>
-            
-            <!-- 3D Depth Indicator -->
-            <div class="depth-indicator" id="depthIndicator">
-                <h4>🎯 3D Depth Analysis</h4>
-                <div class="depth-values">
-                    <div class="depth-value">Left Eye: <strong id="leftEyeDepth">--</strong></div>
-                    <div class="depth-value">Right Eye: <strong id="rightEyeDepth">--</strong></div>
-                    <div class="depth-value">Difference: <strong id="depthDiff">--</strong></div>
+            <a href="#"><i class="fal fa-shopping-cart"></i></a>
+        </div>
+        
+        <div class="pro">
+            <img src="{{ url_for('static', filename='img/f3.jpg') }}" alt="">
+            <div class="des">
+                <span>adidas</span>
+                <h5>Cartoon Astronaut</h5>
+                <div class="star">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
                 </div>
+                <h4>Rs. 1450</h4>
             </div>
-            
-            <!-- Captured Photo -->
-            <div class="captured-photo" id="capturedPhoto">
-                <div class="success-message">
-                    ✅ 3D Verified Photo Captured!
+            <a href="#"><i class="fal fa-shopping-cart"></i></a>
+        </div>
+        
+        <div class="pro">
+            <img src="{{ url_for('static', filename='img/f4.jpg') }}" alt="">
+            <div class="des">
+                <span>adidas</span>
+                <h5>Cartoon Astronaut</h5>
+                <div class="star">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
                 </div>
-                <img id="capturedImage" alt="Captured photo">
-                <br>
-                <button class="download-button" id="downloadButton">Download Photo</button>
+                <h4>Rs. 1450</h4>
             </div>
+            <a href="#"><i class="fal fa-shopping-cart"></i></a>
         </div>
     </div>
+</section>
 
-    <script>
-        class PassportCaptureApp {
-            constructor() {
-                this.ws = null;
-                this.video = document.getElementById('cameraFeed');
-                this.canvas = document.createElement('canvas');
-                this.ctx = this.canvas.getContext('2d');
-                this.stream = null;
-                this.isCapturing = false;
-                this.captureInterval = null;
-                this.currentStep = 0;
-                this.isSetupMode = true;
-                this.leftTurnBeepPlayed = false;
-                this.rightTurnBeepPlayed = false;
-                
-                this.initializeElements();
-                this.setupEventListeners();
-                this.connectWebSocket();
-            }
+<section id="banner" class="section-p1">
+    <h4>Repair Services</h4>
+    <h2>50% discount On Trending Designs</h2>
+    <button class="normal">Explore More</button>
+</section>
 
-            initializeElements() {
-                // UI Elements
-                this.setupScreen = document.getElementById('setupScreen');
-                this.verificationScreen = document.getElementById('verificationScreen');
-                this.startButton = document.getElementById('startButton');
-                this.backButton = document.getElementById('backButton');
-                this.backToSetup = document.getElementById('backToSetup');
-                
-                // Camera elements
-                this.cameraPlaceholder = document.getElementById('cameraPlaceholder');
-                
-                // Progress elements
-                this.step1 = document.getElementById('step1');
-                this.step2 = document.getElementById('step2');
-                this.step3 = document.getElementById('step3');
-                
-                // Instruction and status
-                this.instructionText = document.getElementById('instructionText');
-                this.connectionStatus = document.getElementById('connectionStatus');
-                this.connectionDot = document.getElementById('connectionDot');
-                
-                // 3D Depth indicator elements
-                this.depthIndicator = document.getElementById('depthIndicator');
-                this.leftEyeDepth = document.getElementById('leftEyeDepth');
-                this.rightEyeDepth = document.getElementById('rightEyeDepth');
-                this.depthDiff = document.getElementById('depthDiff');
-                
-                // Captured photo elements
-                this.capturedPhoto = document.getElementById('capturedPhoto');
-                this.capturedImage = document.getElementById('capturedImage');
-                this.downloadButton = document.getElementById('downloadButton');
-            }
-
-            setupEventListeners() {
-                this.startButton.addEventListener('click', () => this.startVerification());
-                this.backButton.addEventListener('click', () => this.goBack());
-                this.backToSetup.addEventListener('click', () => this.goBackToSetup());
-                this.downloadButton.addEventListener('click', () => this.downloadPhoto());
-            }
-
-            connectWebSocket() {
-                try {
-                    this.ws = new WebSocket('ws://localhost:8765/ws/capture');
-                    
-                    this.ws.onopen = () => {
-                        console.log('WebSocket connected');
-                        this.updateConnectionStatus(true);
-                        this.sendPing();
-                    };
-
-                    this.ws.onmessage = (event) => {
-                        try {
-                            const data = JSON.parse(event.data);
-                            this.handleServerMessage(data);
-                        } catch (error) {
-                            console.error('Error parsing server message:', error);
-                        }
-                    };
-
-                    this.ws.onclose = () => {
-                        console.log('WebSocket disconnected');
-                        this.updateConnectionStatus(false);
-                        setTimeout(() => this.connectWebSocket(), 3000);
-                    };
-
-                    this.ws.onerror = (error) => {
-                        console.error('WebSocket error:', error);
-                        this.updateConnectionStatus(false);
-                    };
-
-                } catch (error) {
-                    console.error('Failed to connect WebSocket:', error);
-                    this.updateConnectionStatus(false);
-                }
-            }
-
-            updateConnectionStatus(connected) {
-                if (connected) {
-                    this.connectionStatus.textContent = 'Connected to server';
-                    this.connectionDot.className = 'status-dot connected';
-                } else {
-                    this.connectionStatus.textContent = 'Disconnected from server';
-                    this.connectionDot.className = 'status-dot disconnected';
-                }
-            }
-
-            sendPing() {
-                if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-                    this.ws.send(JSON.stringify({ type: 'ping' }));
-                }
-            }
-
-            // Sound Management Methods
-            playBeepSound() {
-                try {
-                    // Create a simple beep sound using Web Audio API
-                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // 800Hz beep
-                    oscillator.type = 'sine';
-                    
-                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-                    
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + 0.2);
-                } catch (error) {
-                    console.log('Audio not supported:', error);
-                }
-            }
-
-            playSuccessSound() {
-                try {
-                    // Create a success sound (higher pitch, longer duration)
-                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    oscillator.frequency.setValueAtTime(1000, audioContext.currentTime); // 1000Hz success sound
-                    oscillator.type = 'sine';
-                    
-                    gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                    
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + 0.5);
-                } catch (error) {
-                    console.log('Audio not supported:', error);
-                }
-            }
-
-            // State Management Methods
-            startVerification() {
-                this.isSetupMode = false;
-                this.setupScreen.classList.add('hidden');
-                this.verificationScreen.classList.add('active');
-                this.backToSetup.style.display = 'block';
-                this.startCamera();
-            }
-
-            goBack() {
-                window.history.back();
-            }
-
-            goBackToSetup() {
-                this.isSetupMode = true;
-                this.verificationScreen.classList.remove('active');
-                this.setupScreen.classList.remove('hidden');
-                this.backToSetup.style.display = 'none';
-                this.stopCamera();
-                this.resetProgress();
-            }
-
-            resetProgress() {
-                this.currentStep = 0;
-                this.leftTurnBeepPlayed = false;
-                this.rightTurnBeepPlayed = false;
-                this.step1.classList.remove('completed', 'active');
-                this.step2.classList.remove('completed', 'active');
-                this.step3.classList.remove('completed', 'active');
-                this.capturedPhoto.classList.remove('active');
-                this.depthIndicator.classList.remove('active');
-                this.instructionText.textContent = 'Preparing verification...';
-            }
-
-            updateProgress(step) {
-                this.currentStep = step;
-                
-                // Reset all steps
-                this.step1.classList.remove('completed', 'active');
-                this.step2.classList.remove('completed', 'active');
-                this.step3.classList.remove('completed', 'active');
-                
-                // Update progress based on step
-                switch(step) {
-                    case 1: // Turn left
-                        this.step1.classList.add('active');
-                        this.instructionText.textContent = 'Turn your head to the left';
-                        this.depthIndicator.classList.add('active');
-                        break;
-                    case 2: // Turn right
-                        this.step1.classList.add('completed');
-                        this.step2.classList.add('active');
-                        this.instructionText.textContent = 'Turn your head to the right';
-                        this.depthIndicator.classList.add('active');
-                        break;
-                    case 3: // Blink twice
-                        this.step1.classList.add('completed');
-                        this.step2.classList.add('completed');
-                        this.step3.classList.add('active');
-                        this.instructionText.textContent = 'Blink twice';
-                        this.depthIndicator.classList.remove('active');
-                        break;
-                    case 4: // Look straight
-                        this.step1.classList.add('completed');
-                        this.step2.classList.add('completed');
-                        this.step3.classList.add('completed');
-                        this.instructionText.textContent = 'Look straight at the camera';
-                        this.depthIndicator.classList.remove('active');
-                        break;
-                }
-            }
-
-            async startCamera() {
-                try {
-                    this.stream = await navigator.mediaDevices.getUserMedia({
-                        video: {
-                            width: { ideal: 640 },
-                            height: { ideal: 480 },
-                            facingMode: 'user'
-                        }
-                    });
-
-                    this.video.srcObject = this.stream;
-                    this.video.play();
-
-                    this.startButton.disabled = true;
-                    this.cameraPlaceholder.textContent = 'Camera ready';
-                    
-                    // Start sending frames after video loads
-                    this.video.addEventListener('loadedmetadata', () => {
-                        this.cameraPlaceholder.classList.add('hidden');
-                        this.video.classList.add('active');
-                        this.startCapturing();
-                        this.updateProgress(1); // Start with step 1
-                    });
-
-                } catch (error) {
-                    console.error('Error accessing camera:', error);
-                    this.cameraPlaceholder.textContent = '❌ Camera access denied';
-                    this.instructionText.textContent = 'Please allow camera access and try again';
-                }
-            }
-
-            stopCamera() {
-                if (this.stream) {
-                    this.stream.getTracks().forEach(track => track.stop());
-                    this.stream = null;
-                }
-
-                this.video.srcObject = null;
-                this.video.classList.remove('active');
-                this.cameraPlaceholder.classList.remove('hidden');
-                this.cameraPlaceholder.textContent = 'Camera stopped';
-                this.stopCapturing();
-                
-                this.startButton.disabled = false;
-            }
-
-            startCapturing() {
-                if (this.captureInterval) return;
-
-                this.isCapturing = true;
-                this.captureInterval = setInterval(() => {
-                    if (this.video.readyState === 4) {
-                        this.captureFrame();
-                    }
-                }, 200); // Send frame every 200ms
-            }
-
-            stopCapturing() {
-                this.isCapturing = false;
-                if (this.captureInterval) {
-                    clearInterval(this.captureInterval);
-                    this.captureInterval = null;
-                }
-            }
-
-            captureFrame() {
-                if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-                    return;
-                }
-
-                try {
-                    this.canvas.width = this.video.videoWidth;
-                    this.canvas.height = this.video.videoHeight;
-                    this.ctx.drawImage(this.video, 0, 0);
-                    
-                    const dataURL = this.canvas.toDataURL('image/jpeg', 0.8);
-                    
-                    this.ws.send(JSON.stringify({
-                        type: 'frame',
-                        data: dataURL
-                    }));
-
-                } catch (error) {
-                    console.error('Error capturing frame:', error);
-                }
-            }
-
-            resetDetection() {
-                if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-                    this.ws.send(JSON.stringify({ type: 'reset' }));
-                }
-                this.capturedPhoto.classList.remove('active');
-                this.resetProgress();
-                
-                // Restart capturing if camera is still active
-                if (this.stream && this.video.srcObject) {
-                    this.startCapturing();
-                    this.updateProgress(1);
-                }
-            }
-
-            handleServerMessage(data) {
-                if (data.type === 'pong') {
-                    return;
-                }
-
-                // Update progress based on scan step
-                if (data.scan_step) {
-                    switch(data.scan_step) {
-                        case 'verify_left':
-                            this.updateProgress(1);
-                            break;
-                        case 'verify_right':
-                            this.updateProgress(2);
-                            // Play beep sound only once when moving to right turn (left turn completed)
-                            if (!this.leftTurnBeepPlayed) {
-                                this.playBeepSound();
-                                this.leftTurnBeepPlayed = true;
-                            }
-                            break;
-                        case 'center_blink':
-                            this.updateProgress(3);
-                            // Play beep sound only once when moving to blink (right turn completed)
-                            if (!this.rightTurnBeepPlayed) {
-                                this.playBeepSound();
-                                this.rightTurnBeepPlayed = true;
-                            }
-                            break;
-                        case 'finalize':
-                            this.updateProgress(4);
-                            break;
-                    }
-                }
-
-                // Update instruction text with status message
-                if (data.status) {
-                    this.instructionText.textContent = data.status;
-                }
-                
-                // Display 3D depth analysis during turn verification
-                if (data.depth_3d) {
-                    this.update3DDepthIndicator(data.depth_3d);
-                } else {
-                    this.hide3DDepthIndicator();
-                }
-
-                if (data.captured && data.image) {
-                    this.displayCapturedPhoto(data.image, data.filename);
-                }
-
-                if (data.debug) {
-                    console.log('Obstruction debug:', data.debug);
-                }
-                
-                if (data.gaze_debug) {
-                    console.log('Eye gaze debug:', data.gaze_debug);
-                }
-                
-                if (data.turn_debug) {
-                    console.log('Turn debug:', data.turn_debug);
-                }
-            }
-
-            update3DDepthIndicator(depthData) {
-                // Show the 3D indicator
-                if (this.depthIndicator) {
-                    this.depthIndicator.classList.add('active');
-                    
-                    // Update depth values
-                    this.leftEyeDepth.textContent = depthData.left_eye_z;
-                    this.rightEyeDepth.textContent = depthData.right_eye_z;
-                    this.depthDiff.textContent = depthData.depth_diff;
-                    
-                    // Color code based on depth difference (shows turning)
-                    const diff = Math.abs(parseFloat(depthData.depth_diff));
-                    if (diff > 0.015) {
-                        this.depthDiff.style.color = '#2e7d32'; // Green - good turn
-                    } else if (diff > 0.008) {
-                        this.depthDiff.style.color = '#f57f17'; // Orange - slight turn
-                    } else {
-                        this.depthDiff.style.color = '#c62828'; // Red - centered
-                    }
-                }
-            }
-            
-            hide3DDepthIndicator() {
-                if (this.depthIndicator) {
-                    this.depthIndicator.classList.remove('active');
-                }
-            }
-
-            displayCapturedPhoto(imageBase64, filename) {
-                this.capturedImage.src = `data:image/jpeg;base64,${imageBase64}`;
-                this.capturedImage.dataset.filename = filename || 'passport_photo.jpg';
-                this.capturedPhoto.classList.add('active');
-                
-                // Hide 3D depth indicator
-                this.hide3DDepthIndicator();
-                
-                // Update instruction text
-                this.instructionText.textContent = '✅ Photo captured successfully!';
-                
-                // Stop capturing after successful photo
-                this.stopCapturing();
-                
-                // Play success sound (optional)
-                try {
-                    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHWm98OukVBELTKXh8bllHgg7k9n1zoU1Bx1zwfXnpl4VD1Ks5fK2YhsGN5HX88yALgUme8v05Jw/CxppvO/rpVYSC0ym4fG5ZB4IOo/Y9dCFOAcfcsH05adcFBBTrOXyt2IdBjiP1/XOgC8GJ3vL9OOcPgsaaLvv66NWEwtMpeHxuWUeCDmP2PXQhTgHH3LB9OWnXBMQU6zl8rdlHQc4jtf1zn8vBSh9y/TjnD4LGmi67uujVhIMTKXh8bhlHgg5j9j1z4Q4Bx9ywfTlp1wTEFOs5fK3ZR4GOI3X9c5/LgYoe8v045w+Chtpuu7ro1YRDEyl4fG4ZR4JOY/Y9c+EOAcfcsH05adcExBTrOXyt2UeBjiN1/XOfS4FKHvL9OOcPgobabru66NWEQxMpeHxuGUeCTmP2PXPhDgHH3LB9OWnXBMQU6zl8rdlHgY4jdf1zn0uBSh7y/TjnD4KG2m67uujVhEMTKXh8bhlHgk5j9j1z4Q4Bx9ywfTlp1wTEFOs5fK3ZR4GOI3X9c59LgUoe8v045w+Chtpuu7ro1YRDEyl4fG4ZR4JOY/Y9c+EOAcfcsH05adcExBTrOXyt2UeBjiN1/XOfS4FKHvL9OOcPgobabru66NWEQxMpeHxuGYeCTmP2PXPhDgHH3LB9OWnXBMQU6zl8rdlHgY4jdf1zn0uBSh7y/TjnD4KG2m67uujVhEMTKXh8bhlHgk5j9j1z4Q4Bx9ywfTlp1wTEFOs5fK3ZR4GOI3X9c59LgUoe8v045w+Chtpuu7ro1YRDEyl4fG4ZR4JOY/Y9c+EOAcfcsH05aZcExBTrOXyt2UeBjiN1/XOfS4FKHvL9OOcPgobabru66NWEQxMpeHxuGUeCTmP2PXPhDgHH3LB9OWmXBMQU6zl8rdlHgY4jdf1zn0uBSh7y/TjnD4KG2m67uujVhEMTKXh8bhlHgk5j9j1z4Q4Bx9ywfTlp1wTEFOs5fK3ZR4GOI3X9c59LgUoe8v045w+Chtpuu7ro1YRDEyl4fG4ZR4JOY/Y9c+EOAcfcsH05adcExBTrOXyt2UeBjiN1/XOfS4FKHvL9OOcPgobabru66NWEQxMpeHxuGUeCTmP2PXPhDgHH3LB9OWnXBMQU6zl8rdlHgY4jdf1zn0uBSh7y/TjnD4KG2m67uujVhEMTKXh8bhlHgk5j9j1z4Q4Bx9ywfTlp1wTEFOs5fK3ZR4GOI3X9c59LgUoe8v045w+Chtpuu7ro1YRDEyl4fG4ZR4JOY/Y9c+EOAcfcsH05adcExBTrOXyt2UeBjiN1/XOfS4FKHvL9OOcPgobabru66NWEQxMpeHxuGUeCTmP2PXPhDgHH3LB9OWnXBMQU6zl8rdlHgY=');
-                    audio.volume = 0.3;
-                    audio.play().catch(() => {});
-                } catch (e) {}
-                
-                // Also play our custom success sound
-                this.playSuccessSound();
-            }
-
-            downloadPhoto() {
-                const img = this.capturedImage;
-                if (img.src) {
-                    const link = document.createElement('a');
-                    link.download = img.dataset.filename || 'passport_photo.jpg';
-                    link.href = img.src;
-                    link.click();
-                }
-            }
-        }
-
-        // Initialize the app when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            new PassportCaptureApp();
-        });
-    </script>
-</body>
-</html>
+<section id="sm-banner" class="section-p1">
+    <div class="banner-box">
+        <h4>Crazy Deals</h4>
+        <h2>Buy 1 Get 1 Free</h2>
+        <span>Classic Dresses At Hand</span>
+    </div>
+    <div class="banner-box2">
+        <h4>Crazy Deals</h4>
+        <h2>Buy 1 Get 1 Free</h2>
+        <span>Classic Dresses At Hand</span>
+    </div>
+</section>
+{% endblock %}  

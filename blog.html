@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% block title %}Blog - Ecommerce Website{% endblock %}
+
+{% block content %}
+<section id="page-header" class="blog-header">
+    <h2>#readmore</h2>
+    <p>Read all case studies about our products!</p>
+</section>
+
+<section id="blog">
+    <div class="blog-box">
+        <div class="blog-img">
+            <img src="{{ url_for('static', filename='img/b1.jpg') }}" alt="">
+            <div class="category">Fashion</div>
+        </div>
+        <div class="blog-details">
+            <h4>The Cotton-Jersey Zip-Up Hoodie</h4>
+            <p>Kickstarter man braid godard coloring book. Raclette waistcoat selfies yr wolf chartreuse hexagon irony, godard...</p>
+            <div class="blog-meta">
+                <span><i class="far fa-user"></i> By Admin</span>
+                <span><i class="far fa-calendar"></i> 13 Jan, 2024</span>
+                <span><i class="far fa-comments"></i> 5 Comments</span>
+            </div>
+            <a href="#" class="read-more">Continue Reading <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <div class="blog-box">
+        <div class="blog-img">
+            <img src="{{ url_for('static', filename='img/b2.jpg') }}" alt="">
+            <div class="category">Style</div>
+        </div>
+        <div class="blog-details">
+            <h4>How to Style a Quiff</h4>
+            <p>Kickstarter man braid godard coloring book. Raclette waistcoat selfies yr wolf chartreuse hexagon irony, godard...</p>
+            <div class="blog-meta">
+                <span><i class="far fa-user"></i> By Admin</span>
+                <span><i class="far fa-calendar"></i> 13 Apr, 2024</span>
+                <span><i class="far fa-comments"></i> 8 Comments</span>
+            </div>
+            <a href="#" class="read-more">Continue Reading <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <div class="blog-box">
+        <div class="blog-img">
+            <img src="{{ url_for('static', filename='img/b7.jpg') }}" alt="">
+            <div class="category">Fashion</div>
+        </div>
+        <div class="blog-details">
+            <h4>Must-Have Skater Girl Items</h4>
+            <p>Kickstarter man braid godard coloring book. Raclette waistcoat selfies yr wolf chartreuse hexagon irony, godard...</p>
+            <div class="blog-meta">
+                <span><i class="far fa-user"></i> By Admin</span>
+                <span><i class="far fa-calendar"></i> 12 Jan, 2024</span>
+                <span><i class="far fa-comments"></i> 12 Comments</span>
+            </div>
+            <a href="#" class="read-more">Continue Reading <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+</section>
+
+<section id="pagination" class="section-p1">
+    <a href="#" class="active">1</a>
+    <a href="#">2</a>
+    <a href="#"><i class="fas fa-long-arrow-alt-right"></i></a>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+#page-header.blog-header {
+    background-image: url("{{ url_for('static', filename='img/b1.jpg') }}");
+    width: 100%;
+    height: 40vh;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    padding: 14px;
+    position: relative;
+}
+
+#page-header.blog-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+#page-header.blog-header h2,
+#page-header.blog-header p {
+    color: white;
+    position: relative;
+    z-index: 2;
+}
+
+#blog {
+    padding: 60px 150px;
+}
+
+#blog .blog-box {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: stretch;
+}
+
+#blog .blog-box:hover {
+    transform: translateY(-5px);
+}
+
+#blog .blog-img {
+    width: 50%;
+    position: relative;
+}
+
+#blog img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#blog .category {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #088178;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+#blog .blog-details {
+    width: 50%;
+    padding: 30px;
+}
+
+#blog .blog-details h4 {
+    font-size: 22px;
+    color: #1a1a1a;
+    margin-bottom: 15px;
+}
+
+#blog .blog-details p {
+    color: #465b52;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+#blog .blog-meta {
+    margin-bottom: 20px;
+}
+
+#blog .blog-meta span {
+    color: #666;
+    margin-right: 20px;
+    font-size: 14px;
+}
+
+#blog .blog-meta i {
+    margin-right: 5px;
+    color: #088178;
+}
+
+#blog .read-more {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    color: #088178;
+    transition: all 0.3s ease;
+}
+
+#blog .read-more i {
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+}
+
+#blog .read-more:hover {
+    color: #066a63;
+}
+
+#blog .read-more:hover i {
+    transform: translateX(5px);
+}
+
+#pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#pagination a {
+    text-decoration: none;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 4px;
+    color: #1a1a1a;
+    font-weight: 600;
+    margin: 0 5px;
+    transition: all 0.3s ease;
+}
+
+#pagination a.active,
+#pagination a:hover {
+    background: #088178;
+    color: white;
+}
+
+@media (max-width: 799px) {
+    #blog {
+        padding: 40px 20px;
+    }
+    
+    #blog .blog-box {
+        flex-direction: column;
+    }
+    
+    #blog .blog-img,
+    #blog .blog-details {
+        width: 100%;
+    }
+    
+    #blog img {
+        height: 300px;
+    }
+    
+    #blog .blog-details {
+        padding: 20px;
+    }
+}
+</style>
+{% endblock %} 

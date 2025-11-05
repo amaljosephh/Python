@@ -1,0 +1,427 @@
+{% extends "base.html" %}
+
+{% block title %}Products - Ecommerce Website{% endblock %}
+
+{% block content %}
+<section id="page-header">
+    <h2>#stayhome</h2>
+    <p>Save more with coupons & up to 70% off!</p>
+</section>
+
+<section id="search-section" class="section-p1">
+    <div class="search-container">
+        <h3>Find Similar Products</h3>
+        <p class="search-description">Upload an image to find visually similar products in our collection</p>
+        <form action="{{ url_for('main.search_products') }}" method="POST" enctype="multipart/form-data" id="search-form">
+            <div class="search-box">
+                <div class="file-input-wrapper">
+                    <input type="file" name="image" accept="image/*" id="image-upload">
+                    <div class="file-input-preview">
+                        <span id="file-name">No file chosen</span>
+                    </div>
+                </div>
+                <button type="submit" class="search-button">
+                    <span class="button-text">Search Similar Products</span>
+                    <div class="loading-spinner"></div>
+                </button>
+            </div>
+        </form>
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
+        <div id="preview-container" class="hidden">
+            <img id="image-preview" src="" alt="Preview">
+        </div>
+    </div>
+</section>
+
+<section id="product1" class="section-p1">
+    <div class="pro-container" id="products-container">
+        {% for product in products %}
+        <div class="pro fade-in">
+            <img src="{{ url_for('static', filename=product.image_path) }}" alt="">
+            <div class="des">
+                <span>{{ product.brand }}</span>
+                <h5>{{ product.name }}</h5>
+                <p class="description">{{ product.description }}</p>
+                <div class="star">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <h4>Rs. {{ product.price }}</h4>
+            </div>
+            <a href="#"><i class="fal fa-shopping-cart cart"></i></a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section id="pagination" class="section-p1">
+    <a href="#">1</a>
+    <a href="#">2</a>
+    <a href="#"><i class="fal fa-long-arrow-alt-right"></i></a>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+#search-section {
+    text-align: center;
+    margin: 40px 0;
+    padding: 0 20px;
+}
+
+.search-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.search-container h3 {
+    font-size: 24px;
+    color: #2d2d2d;
+    margin-bottom: 10px;
+}
+
+.search-description {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 16px;
+}
+
+.search-box {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.file-input-wrapper {
+    flex: 1;
+    min-width: 300px;
+    position: relative;
+}
+
+#image-upload {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.file-input-preview {
+    padding: 12px 20px;
+    background-color: white;
+    border: 2px solid #e1e1e1;
+    border-radius: 6px;
+    text-align: left;
+    color: #666;
+    font-size: 15px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.file-input-preview:hover {
+    border-color: #088178;
+}
+
+.file-input-preview::before {
+    content: "Choose File";
+    background-color: #f1f1f1;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-right: 10px;
+    color: #333;
+    display: inline-block;
+}
+
+.search-button {
+    background-color: #088178;
+    color: white;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    min-width: 200px;
+}
+
+.search-button:hover {
+    background-color: #066a63;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(8, 129, 120, 0.2);
+}
+
+.error-message {
+    color: #dc3545;
+    margin-top: 15px;
+    padding: 12px;
+    background-color: #fff2f2;
+    border-radius: 6px;
+    border: 1px solid #ffcdd2;
+}
+
+.description {
+    font-size: 0.9em;
+    color: #666;
+    margin: 8px 0;
+    line-height: 1.4;
+}
+
+@media (max-width: 799px) {
+    .search-container {
+        padding: 20px;
+    }
+    
+    .search-box {
+        flex-direction: column;
+    }
+    
+    .file-input-wrapper {
+        width: 100%;
+    }
+    
+    .search-button {
+        width: 100%;
+    }
+}
+
+/* Preview Container Styles */
+#preview-container {
+    margin: 20px auto;
+    max-width: 300px;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+#preview-container.hidden {
+    height: 0;
+    margin: 0 auto;
+}
+
+#image-preview {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading Animation */
+.search-button {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading-spinner {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Product Animation */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* File Upload Animation */
+.file-input-preview {
+    position: relative;
+    overflow: hidden;
+}
+
+.file-input-preview::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #088178;
+    transition: width 0.3s ease;
+}
+
+.file-input-wrapper:hover .file-input-preview::after {
+    width: 100%;
+}
+
+/* Search Button Animation */
+.search-button {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.search-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.search-button:hover::before {
+    left: 100%;
+}
+
+.search-button:active {
+    transform: scale(0.95);
+}
+
+/* Loading State */
+.loading .button-text {
+    opacity: 0;
+}
+
+.loading .loading-spinner {
+    display: block;
+}
+
+/* Product Container Animation */
+.pro-container {
+    perspective: 1000px;
+}
+
+.pro {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation-delay: calc(var(--animation-order) * 0.1s);
+}
+
+.pro:hover {
+    transform: translateY(-5px) rotateX(5deg);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('search-form');
+    const fileInput = document.getElementById('image-upload');
+    const fileName = document.getElementById('file-name');
+    const previewContainer = document.getElementById('preview-container');
+    const imagePreview = document.getElementById('image-preview');
+    const searchButton = document.querySelector('.search-button');
+    const productsContainer = document.getElementById('products-container');
+
+    // Add animation order to products
+    const products = document.querySelectorAll('.pro');
+    products.forEach((product, index) => {
+        product.style.setProperty('--animation-order', index);
+    });
+
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            fileName.textContent = file.name;
+            
+            // Show image preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                previewContainer.classList.remove('hidden');
+            }
+            reader.readAsDataURL(file);
+        } else {
+            fileName.textContent = 'No file chosen';
+            previewContainer.classList.add('hidden');
+        }
+    });
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!fileInput.files[0]) {
+            alert('Please select an image first');
+            return;
+        }
+
+        // Add loading state
+        searchButton.classList.add('loading');
+        
+        // Remove existing fade-in classes
+        products.forEach(product => {
+            product.classList.remove('fade-in');
+        });
+
+        // Submit the form
+        const formData = new FormData(form);
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(html => {
+            // Update the products container with new results
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            const newProducts = tempDiv.querySelector('.pro-container').innerHTML;
+            productsContainer.innerHTML = newProducts;
+
+            // Add animation to new products
+            const newProductElements = productsContainer.querySelectorAll('.pro');
+            newProductElements.forEach((product, index) => {
+                product.style.setProperty('--animation-order', index);
+                product.classList.add('fade-in');
+            });
+
+            // Remove loading state
+            searchButton.classList.remove('loading');
+            
+            // Scroll to results
+            productsContainer.scrollIntoView({ behavior: 'smooth' });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            searchButton.classList.remove('loading');
+        });
+    });
+});
+</script>
+{% endblock %} 

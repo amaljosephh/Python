@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Ecommerce Website{% endblock %}</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <section id="header">
+        <a href="#"><img src="{{ url_for('static', filename='img/logo.png') }}" class="logo" alt=""></a>
+        <div>
+            <ul id="navbar">
+                <li><a {% if request.endpoint == 'main.index' %}class="active"{% endif %} href="{{ url_for('main.index') }}">Home</a></li>
+                <li><a {% if request.endpoint == 'main.products' %}class="active"{% endif %} href="{{ url_for('main.products') }}">Shop</a></li>
+                <li><a {% if request.endpoint == 'main.blog' %}class="active"{% endif %} href="{{ url_for('main.blog') }}">Blog</a></li>
+                <li><a {% if request.endpoint == 'main.about' %}class="active"{% endif %} href="{{ url_for('main.about') }}">About</a></li>
+                <li><a {% if request.endpoint == 'main.contact' %}class="active"{% endif %} href="{{ url_for('main.contact') }}">Contact</a></li>
+                <li><a href="#"><i class="far fa-shopping-bag"></i></a></li>
+            </ul>
+        </div>
+    </section>
+
+    {% block content %}{% endblock %}
+
+    <section id="newsletter" class="section-p1">
+        <div class="newstext">
+            <h4>Sign Up</h4>
+            <p>Get Email Updates for news</p>
+        </div>
+        <div class="form">
+            <input type="text" placeholder="Your Email Address">
+            <button>Sign Up</button>
+        </div>
+    </section>
+
+    <footer class="section-p1">
+        <div class="footer-content">
+            <div class="col">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="" class="footer-logo">
+                <h4>Contact</h4>
+                <p><strong>Address:</strong> 123 Main Street, City, Country</p>
+                <p><strong>Phone:</strong> +1 234 567 890</p>
+                <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+                <div class="follow">
+                    <h4>Follow Us</h4>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <h4>About</h4>
+                <a href="{{ url_for('main.about') }}">About Us</a>
+                <a href="#">Delivery Information</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms & Conditions</a>
+                <a href="{{ url_for('main.contact') }}">Contact Us</a>
+            </div>
+
+            <div class="col">
+                <h4>My Account</h4>
+                <a href="#">Sign In</a>
+                <a href="#">View Cart</a>
+                <a href="#">My Wishlist</a>
+                <a href="#">Track My Order</a>
+                <a href="#">Help</a>
+            </div>
+
+            <div class="col install">
+                <h4>Install App</h4>
+                <p>From App Store or Google Play</p>
+                <div class="row">
+                    <img src="{{ url_for('static', filename='img/pay.png') }}" alt="">
+                    <img src="{{ url_for('static', filename='img/app.jpg') }}" alt="">
+                </div>
+                <p>Secured Payment Gateways</p>
+                <img src="{{ url_for('static', filename='img/pay.png') }}" alt="">
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2024 Your Company Name. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+    /* Footer Styles */
+    footer {
+        background-color: #f8f9fa;
+        padding-top: 60px !important;
+        margin-top: 60px;
+    }
+
+    .footer-content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin-bottom: 40px;
+    }
+
+    footer .col {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 20px;
+        min-width: 250px;
+    }
+
+    footer .footer-logo {
+        margin-bottom: 30px;
+        max-width: 150px;
+    }
+
+    footer h4 {
+        font-size: 16px;
+        padding-bottom: 20px;
+        margin: 0;
+    }
+
+    footer p {
+        font-size: 14px;
+        margin: 0 0 8px 0;
+        color: #465b52;
+    }
+
+    footer a {
+        font-size: 14px;
+        text-decoration: none;
+        color: #465b52;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+    }
+
+    footer a:hover {
+        color: #088178;
+        padding-left: 8px;
+    }
+
+    footer .social-icons {
+        margin-top: 20px;
+    }
+
+    footer .social-icons a {
+        color: #465b52;
+        padding-right: 4px;
+        margin-right: 15px;
+        font-size: 20px;
+        transition: all 0.3s ease;
+    }
+
+    footer .social-icons a:hover {
+        color: #088178;
+        padding-left: 0;
+    }
+
+    footer .install .row img {
+        border: 1px solid #088178;
+        border-radius: 6px;
+        margin: 10px 0;
+        max-width: 150px;
+    }
+
+    footer .copyright {
+        width: 100%;
+        text-align: center;
+        padding-top: 20px;
+        border-top: 1px solid #e1e1e1;
+    }
+
+    footer .copyright p {
+        color: #1a1a1a;
+    }
+
+    @media (max-width: 799px) {
+        .footer-content {
+            padding: 20px;
+        }
+        
+        footer .col {
+            margin-bottom: 30px;
+        }
+    }
+    </style>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 
